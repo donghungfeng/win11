@@ -193,7 +193,6 @@ main{
   margin-top: 7px;
   transition: all 0.2s ease;
 }
-
 .clock{
     position:fixed;
     text-align: right;
@@ -1676,6 +1675,16 @@ outline-offset:-1px ;
       transform: scale(1) translateY(0px);
       pointer-events: all;
       display: block;
+    }
+
+    .display_show {
+      opacity: 1;
+      display: block;
+    }
+    .display_hide{
+      display: none;
+      transition: opacity 1s ease-out;
+      opacity: 0;
     }
   
    /* .Window.Display-None{
@@ -4575,6 +4584,7 @@ height: 0px;
 .open1{
 background: var(--deafult_theme_p_apps_hover_bck_clr);
 }
+
 .Nav-Container ul.align_left{
   justify-content: left;
   }

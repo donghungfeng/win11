@@ -1,0 +1,302 @@
+Q1:
+spark.read.format("parquet").option("compression", "gzip").load("/verulam_blue/tests/data/parquet/hr_records/").createOrReplaceTempView("q1_view")
+
+val df_q1 = spark.sql("""
+SELECT 
+    first_name, 
+    last_name, 
+    month(date_of_joining) as month_of_joining,
+    year(date_of_joining) as year_of_joining
+FROM q1_view
+WHERE year(date_of_joining) = 2015
+ORDER BY month_of_joining ASC
+""")
+
+spark.sql("""
+SELECT 
+	first_name, 
+	last_name, 
+	month(date_of_joining) as month_of_joining,
+	year(date_of_joining) as year_of_joining
+FROM q1_view
+WHERE year(date_of_joining) = 2015
+ORDER BY month_of_joining ASC
+""")
+.coalesce(1)
+.write.format("json")
+.option("compression", "gzip")
+.mode("overwrite")
+.save("/verulam_blue/test1/problem1/solution/")
+
+spark.read.format("json").option("compression", "gzip").load("/verulam_blue/test1/problem1/solution/").show(3,false)
+
+Q2:
+spark.read.format("csv")
+.option("sep", "\t")
+.option("compression", "gzip")
+.load("/verulam_blue/tests/data/tab_text/gp_address")
+.createOrReplaceTempView("gp_address")
+
+spark.read.format("csv").option("sep", "\t").option("compression", "gzip")
+.load("/verulam_blue/tests/data/tab_text/gp_demographics")
+.createOrReplaceTempView("gp_demographics")
+
+spark.sql("SELECT * FROM gp_address TABLESAMPLE(1000 ROWS)")
+.createOrReplaceTempView("gp_address_sample")
+
+spark.sql("SELECT * FROM gp_demographics TABLESAMPLE(1000 ROWS)")
+.createOrReplaceTempView("gp_demographics_sample")
+
+var df_q2 = spark.sql("""
+SELECT 
+	a._c1 as practice_code, 
+	a._c3 as surgery_name, 
+	d._c2 AS nbr_of_patients
+FROM gp_address_sample a
+JOIN gp_demographics_sample d
+ON a._c1 = d._c0
+WHERE d._c2 < 300
+""")
+
+spark.sql("""
+SELECT 
+	a._c1 as practice_code, 
+	a._c3 as surgery_name, 
+	d._c2 AS nbr_of_patients
+FROM gp_address a
+JOIN gp_demographics d
+ON a._c1 = d._c0
+WHERE d._c2 < 300
+""")
+.write.format("json")
+.option("compression", "gzip")
+.mode("overwrite")
+.save("/verulam_blue/test1/problem2/solution/")
+
+spark.read.format("json")
+.option("compression", "gzip")
+.load("/verulam_blue/test1/problem2/solution/")
+.show(50, false)
+
+
+Q4:
+spark.read.format("csv").option("sep", "\t").option("compression", "gzip").load("/verulam_blue/tests/data/tab_text/hr").createOrReplaceTempView("q4_view")
+
+val df_q4 = spark.sql("""
+SELECT _c3, _c5, _c17
+FROM q4_view_
+""").selectExpr("concat_ws('|',*) as result")
+
+df_q4.show(3,)
+
+val df_q4 = spark.sql("""
+SELECT _c3, _c5, _c17
+FROM q4_view_sample
+""")
+.selectExpr("concat_ws('|',*) as result")
+df_q4.show(3, false)
+spark.read.format("csv")
+.option("sep", "|")
+.load("/verulam_blue/test1/problem4/solution/")
+.show(3, false)
+
+Q5:
+spark.sql("SELECT * FROM gp_db.gp_address TABLESAMPLE(10000 ROWS)").createOrReplaceTempView("gp_address_sample")
+
+spark.sql("SELECT * FROM gp_db.gp_rx TABLESAMPLE(10000 ROWS)").createOrReplaceTempView("gp_rx_sample")
+
+spark.sql("SELECT * FROM gp_address_sample LIMIT 3").show(false)
+spark.sql("SELECT * FROM gp_rx_sample LIMIT 3").show(false)
+
+var df_q5 = spark.sql("""
+SELECT surgery_name, nbr_prescribed, name_rank 
+FROM(
+    SELECT 
+        a.surgery_name, 
+        sum(r.items) as nbr_prescribed,
+        DENSE_RANK() OVER(
+        ORDER BY sum(r.items) DESC
+        ) as name_rank
+    FROM gp_address_sample a
+    JOIN gp_rx_sample r
+    ON a.practice_code = r.practice_code
+    WHERE r.bnf_name LIKE "%Diazepam%"
+    GROUP BY a.practice_code, a.surgery_name
+    ORDER BY nbr_prescribed DESC)
+WHERE name_rank < 11
+""")
+.selectExpr("concat_ws('\t', *) as results")
+
+spark.sql("""
+SELECT surgery_name, nbr_prescribed, name_rank 
+FROM(
+    SELECT 
+        a.surgery_name, 
+        sum(r.items) as nbr_prescribed,
+        DENSE_RANK() OVER(
+        ORDER BY sum(r.items) DESC
+        ) as name_rank
+    FROM gp_db.gp_address a
+    JOIN gp_db.gp_rx r
+    ON a.practice_code = r.practice_code
+    WHERE r.bnf_name LIKE "%Diazepam%"
+    GROUP BY a.practice_code, a.surgery_name
+    ORDER BY nbr_prescribed DESC)
+WHERE name_rank < 11
+""")
+.selectExpr("concat_ws('\t', *) as results").write.format("text").option("compression", "bzip2").mode("overwrite").save("/verulam_blue/test1/problem5/solution/")
+
+spark.read.format("csv")
+.option("sep", "\t")
+.option("compression", "bzip2")
+.load("/verulam_blue/test1/problem5/solution/")
+.show(50)
+
+Q6:
+spark.read.format("json")
+.option("compression", "gzip")
+.load("/verulam_blue/tests/data/json/taxi_data")
+.createOrReplaceTempView("q6_view")
+
+spark.sql("""
+SELECT 
+cast(vendor_id as string) as vendor_id,
+cast(pickup_datetime as date) as pickup_datetime,
+cast(dropoff_datetime as date) as dropoff_datetime
+FROM q6_view
+ORDER by vendor_id DESC
+""")
+.write.format("parquet")
+.option("compression", "snappy")
+.mode("overwrite")
+.save("/verulam_blue/test1/problem6/solution/")
+
+spark.read.format("parquet")
+.option("compression", "snappy")
+.load("/verulam_blue/test1/problem6/solution/")
+.show(3, false)
+
+Q7:
+spark.sql("SELECT * FROM hr_db.hr_records TABLESAMPLE(1000 ROWS)")
+.createOrReplaceTempView("hr_records_sample")
+
+spark.sql("SELECT * FROM hr_records_sample LIMIT 3").show(false)
+
+var df_q7 = spark.sql("""
+SELECT first_name, last_name, 
+concat(substring(ssn,1,3),':',zip,':',substring(phone_nbr,1,3)) as alias
+FROM hr_records_sample
+""")
+
+df_q7.show(3, false)
+
+spark.sql("""
+SELECT first_name, last_name, 
+concat(substring(ssn,1,3),':',zip,':',substring(phone_nbr,1,3)) as alias
+FROM hr_db.hr_records
+""")
+.write.format("parquet")
+.option("compression", "snappy")
+.mode("overwrite")
+.save("/verulam_blue/test1/problem7/solution/")
+
+spark.read.format("parquet")
+.option("compression", "snappy")
+.load("/verulam_blue/test1/problem7/solution/")
+.show(3, false)
+
+Q8:
+spark.read.format("parquet")
+.option("compression", "gzip")
+.load("/verulam_blue/tests/data/parquet/emr_data")
+.createOrReplaceTempView("q8_view")
+
+var df_q8 = spark.sql("""
+SELECT 
+	date_of_visit,
+	sum(ili_pne_visits) as nbr_visits
+FROM q8_view
+WHERE month(date_of_visit) = 5
+GROUP BY date_of_visit
+ORDER BY date_of_visit
+""")
+.selectExpr("concat_ws('|',*) as results")
+
+df_q8.show(3)
+
+spark.sql("""
+SELECT 
+	date_of_visit,
+	sum(ili_pne_visits) as nbr_visits
+FROM q8_view 
+WHERE month(date_of_visit) = 5
+GROUP BY date_of_visit
+ORDER BY date_of_visit
+""")
+.selectExpr("concat_ws('|',*) as results")
+.write.format("text")
+.option("compression", "gzip")
+.mode("overwrite")
+.save("/verulam_blue/test1/problem8/solution/")
+
+spark.read.format("csv")
+.option("sep", "|")
+.option("compression", "gzip")
+.load("/verulam_blue/test1/problem8/solution/")
+.show(3, false)
+
+Q9:
+spark.sql("SELECT * FROM gp_db.gp_rx ")
+.createOrReplaceTempView("gp_rx_sample")
+
+var df_q9 = spark.sql("""
+SELECT bnf_name, sum(items) as nbr_prescribed
+FROM gp_rx_sample 
+WHERE bnf_name LIKE "%Diazepam%"
+GROUP BY bnf_name
+ORDER BY nbr_prescribed DESC
+""")
+
+df_q9.show(3, false)
+
+spark.sql("""
+SELECT bnf_name, sum(items) as nbr_prescribed
+FROM gp_db.gp_rx 
+WHERE bnf_name LIKE "%Diazepam%"
+GROUP BY bnf_name
+ORDER BY nbr_prescribed DESC
+""")
+.coalesce(1)
+.write.format("parquet")
+.option("compression", "gzip")
+.mode("overwrite")
+.save("/verulam_blue/test1/problem9/solution/")
+
+spark.read.format("parquet")
+.option("compression", "gzip")
+.load("/verulam_blue/test1/problem9/solution/")
+.show(16, false)
+
+Q10:
+spark.sql("SELECT * FROM hr_db.hr_records TABLESAMPLE(1000 ROWS)").createOrReplaceTempView("hr_records")
+
+var df_q10 = spark.sql("""
+SELECT *
+FROM hr_records
+WHERE datediff('2020-12-01', date_of_joining)/365 > 10
+""")
+
+spark.sql("CREATE DATABASE IF NOT EXISTS test1_solutions")
+
+spark.sql("""
+SELECT *
+FROM hr_db.hr_records
+WHERE datediff('2020-12-01', date_of_joining)/365 > 10
+""")
+.write.format("avro").option("compression", "snappy").mode("overwrite").option("path", "/verulam_blue/test1/problem10/solution/").saveAsTable("test1_solutions.q10_soln")
+
+
+
+
+
+

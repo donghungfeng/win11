@@ -19,14 +19,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Recreation of Winbows 11 in the browser made with html css js">
 
-  <link rel="apple-touch-icon"
+  <!-- <link rel="apple-touch-icon"
     href="https://raw.githubusercontent.com/cupofcoffebruh/Binbows11-copy/main/binbows11_dc_server_logo512.png">
   <meta name="description" content="Recreation of Binbows 11 in the browser made with html css js">
   <div id="preloader">
     <img class="Win11"
       src="https://raw.githubusercontent.com/cupofcoffebruh/Binbows11-copy/main/Icons/Win11Favicon.png">
     <p>Getting Ready </p>
-  </div>
+  </div> -->
 
   <title>Windows 11 in html, css and javascript</title>
 
@@ -450,11 +450,76 @@
     </div>
 
 
+    <!--Store window-->
+    <div id="emr" class="Window">
+      <div class="center_it">
+        MER
+      </div>
+      <div class="resizer1 bottom"></div>
+      <div class="resizer1 right"></div>
+      <div class="resizer1 left"></div>
+      <div class="resizer1 bottom_right"></div>
+      <div class="resizer1 top"></div>
+      <div class="resizer1 bottom_left"></div>
+      <div class="resizer1 top_left"></div>
+      <!--<input id="text_area" type="text">-->
+      <!-- <iframe src="https://www.photopea.com"></iframe>-->
+      <!--<iframe src=""></iframe>-->
+      <!-- <iframe src=" https://www.google.com/webhp?igu=1"></iframe>-->
+      <!-- <iframe src="https://www.wikipedia.org"></iframe>-->
+      <!--<iframe src="https://vscode.dev/"></iframe>-->
+      <!--<iframe src="https://venge.io"></iframe>-->
+      <!--<iframe src="https://win11-settings.netlify.app/system"></iframe>-->
+      <!--<iframe src="https://raw.githubusercontent.com/cupofcoffebruh/Binbows11-copy/main/apps/camera/camera.html"></iframe>-->
+      <div id="store_header" class="Window-header">
+        <img class="app-img"
+          src="https://raw.githubusercontent.com/cupofcoffebruh/Binbows11-copy/main/Icons/Microsoft_Store_2021.png">
+        <p>EMR</p>
+        <div class="close-section">
+          <img id="bxminusemr" class=" bx-minus"
+            src="https://raw.githubusercontent.com/cupofcoffebruh/Binbows11-copy/main/Ui_icons/minimize.png">
+          <img onclick="click()" onmouseover="onhover4()" onmouseout="onhover4()" class="bx-square" id="square1"
+            src="https://raw.githubusercontent.com/cupofcoffebruh/Binbows11-copy/main/Ui_icons/maximize.png">
+          <div onmouseover="onhover4()" onmouseout="onhover4()" id="multi_task_box" class="multi_task_box">
+            <div class="multi_task_box_column">
+              <div id="emr_column-left" class="column-left"></div>
+              <div id="emr_column-right" class="column-right"></div>
+            </div>
+            <div class="multi_task_box_column">
+              <div id="emr_column-left1" class="column-left1"></div>
+              <div id="emr_column-right1" class="column-right1"></div>
+            </div>
+            <div class="multi_task_box_column">
+              <div id="emr_column-left2" class="column-left2"></div>
+              <div id="emr_column-left2_center_item" class="column-left2_center_item"></div>
+              <div id="emr_column-right2" class="column-right2"></div>
+            </div>
+            <div class="multi_task_box_column">
+              <div id="emr_column-left3" class="column-left3"></div>
+              <div id="emr_column-right3-top" class="column-right3-top"></div>
+              <div id="emr_column-right3-bottom" class="column-right3-bottom"></div>
+            </div>
+            <div class="multi_task_box_column">
+              <div id="emr_column-left4-top" class="column-left4-top"></div>
+              <div id="emr_column-left4-bottom" class="column-left4-bottom"></div>
+              <div id="emr_column-right4-top" class="column-right4-top"></div>
+              <div id="emr_column-right4-bottom" class="column-right4-bottom"></div>
+            </div>
+            <div class="multi_task_box_column">
+              <div id="emr_column-left5" class="column-left5"></div>
+              <div id="emr_column-left5_center_item" class="column-left5_center_item"></div>
+              <div id="emr_column-right5" class="column-right5"></div>
+            </div>
+          </div>
+          <img id="emr_close" class=" bx-x"
+            src="https://raw.githubusercontent.com/cupofcoffebruh/Binbows11-copy/main/Ui_icons/close.png">
+        </div>
+      </div>
+    </div>
+
+
    
 
-
-
-    </div>
     <div class="Desktop-apps-container">
       <div class="Desktop-App">
         <img id="Recycle-bin" src="https://raw.githubusercontent.com/cupofcoffebruh/Binbows11-copy/main/Icons/bin0.png">
@@ -490,6 +555,11 @@
         <a href="https://github.com/RedEdge967/win11-web" target="_blank"><img id="User-details"
             src="https://raw.githubusercontent.com/cupofcoffebruh/Binbows11-copy/main/Icons/github.png"></a>
         <p>Github</p>
+      </div>
+      <div class="Desktop-App">
+        <img id="emr_app"
+          src="./icon_emr.png">
+        <p> EMR</p>
       </div>
     </div>
     <div id="context-menu">
@@ -1408,7 +1478,7 @@
         <li id="settings"><span class="line"></span><span id="tool_tip_explorer" class="tooltip">Settings</span><img
             class="icon7" id="icon7"
             src="https://raw.githubusercontent.com/cupofcoffebruh/Binbows11-copy/main/Icons/settings.png"></li>
-        <li id="emr_unit"><span class="lineemr"></span><span class="tooltip"> EMR</span><img class="iconemr"
+        <li id="emr_unit" class="display_hide"><span class="lineemr"></span><span class="tooltip"> EMR</span><img class="iconemr"
             id="iconemr" src="./icon_emr.png" width="24"></li>
 
 

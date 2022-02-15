@@ -564,18 +564,34 @@ let store_unit = document.querySelector("#store_unit");
 let calc_open = document.querySelector("#calc_open")
 let totaskbar = document.querySelector(".bx-minus");
 let totaskbar1 = document.querySelector("#bxminus");
+let totaskbaremr = document.querySelector("#bxminusemr");
 let widow1234 = document.querySelector(".Window Active");
 let taskbar = document.querySelector(".Nav-Container ul ");
 let settings = document.querySelector("#settings");
 let context_menu_option = document.querySelector("#left");
 let square1 = document.querySelector("#square1");
 let store_close = document.querySelector("#store_close");
+let emr_close = document.querySelector("#emr_close");
+
+//desktop app
+let emr_app = document.querySelector("#emr_app");
 
 store_close.onclick = function () {
   store.classList.remove("Active1");
   line1.classList.remove("notactive");
   line1.classList.remove("active");
   store_unit.classList.remove("open1");
+}
+emr_close.onclick = function () {
+  emr.classList.remove("Active1");
+  
+  lineemr.classList.remove("notactive");
+  lineemr.classList.remove("active");
+
+  emr_unit.classList.remove("open1");
+
+  emr_unit.classList.add("display_hide");
+  emr_unit.classList.remove("display_show");
 }
 square1.onclick = function () {
   store.style.width = null
@@ -663,6 +679,23 @@ totaskbar1.addEventListener("click", () => {
     square1.src = "https://raw.githubusercontent.com/cupofcoffebruh/Binbows11-copy/main/Ui_icons/maximize.png";
   }
 })
+totaskbaremr.onclick = function () {
+  emr.classList.toggle("Active1");
+  lineemr.classList.toggle("notactive");
+  lineemr.classList.add("active");
+  //settings.classList.toggle("open");
+  emr.style.borderRadius = null;
+  store_unit.classList.remove("open1");
+  emr_unit.classList.remove("open1");
+}
+totaskbaremr.addEventListener("click", () => {
+  if (emr.classList.contains("SmallScreen1")) {
+    square1.src = "https://win11.blueedge.me/img/icon/ui/maxmin.png";
+
+  } else {
+    square1.src = "https://raw.githubusercontent.com/cupofcoffebruh/Binbows11-copy/main/Ui_icons/maximize.png";
+  }
+})
 totaskbar.onclick = function () {
   Window.classList.toggle("Active");
   line.classList.toggle("notactive");
@@ -682,6 +715,8 @@ totaskbar.addEventListener("click", () => {
 icon7.onclick = function () {
   line.classList.toggle("notactive");
   line.classList.add("active");
+  line1.classList.remove("notactive");
+  lineemr.classList.remove("notactive");
   startmenu.classList.remove("active");
   search_menu.classList.remove("opened");
   calendar.classList.remove("active");
@@ -689,8 +724,8 @@ icon7.onclick = function () {
   settings.classList.toggle("open");
   store_unit.classList.remove("open1")
   emr_unit.classList.remove("open1")
-  line1.classList.remove("notactive");
   store.style.zIndex = "0"
+  emr.style.zIndex = "0";
   Window.style.zIndex = "99999999"
 
 }
@@ -698,6 +733,7 @@ icon6.onclick = function () {
   line1.classList.toggle("notactive");
   line1.classList.add("active");
   line.classList.remove("notactive");
+  lineemr.classList.remove("notactive");
   startmenu.classList.remove("active");
   search_menu.classList.remove("opened");
   settings.classList.remove("open");
@@ -708,6 +744,7 @@ icon6.onclick = function () {
   settings.classList.remove("open");
   store.style.zIndex = "99999999"
   Window.style.zIndex = "0"
+  emr.style.zIndex = "0";
 
 
 }
@@ -723,7 +760,29 @@ iconemr.onclick = function () {
   emr_unit.classList.toggle("open1");
   store_unit.classList.remove("open1");
   settings.classList.remove("open");
-  emr.style.zIndex = "99999999"
+  emr.style.zIndex = "99999999";
+  emr.classList.toggle("Active1");
+
+}
+
+emr_app.onclick = function () {
+
+  lineemr.classList.toggle("notactive");
+  lineemr.classList.add("active");
+  startmenu.classList.remove("active");
+  search_menu.classList.remove("opened");
+  calendar.classList.remove("active");
+  settings.classList.remove("open");
+  emr_unit.classList.toggle("Active1");
+  emr_unit.classList.toggle("open1");
+
+  emr_unit.classList.add("display_show");
+  emr_unit.classList.remove("display_hide");
+
+  store_unit.classList.remove("open1");
+  settings.classList.remove("open");
+  emr.style.zIndex = "99999999";
+  emr.classList.toggle("Active1");
 
 }
 icon6.addEventListener("click", () => {
@@ -3415,5 +3474,4 @@ store_column_right5.addEventListener("click", () => {
     square1.src = "https://raw.githubusercontent.com/cupofcoffebruh/Binbows11-copy/main/Ui_icons/maximize.png";
   }
 })
-
 
